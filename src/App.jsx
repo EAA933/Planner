@@ -280,13 +280,13 @@ function TaskModal({ open, onClose, onSave, initial }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-3 sm:p-4"
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 p-0 sm:p-4"
       >
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 20, opacity: 0 }}
-          className="w-full max-w-lg sm:max-w-xl rounded-2xl bg-white p-4 sm:p-5 shadow-xl"
+          className="w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl bg-white p-4 sm:p-5 shadow-xl max-h-[92dvh] overflow-hidden"
         >
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
@@ -301,7 +301,8 @@ function TaskModal({ open, onClose, onSave, initial }) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+          <form onSubmit={handleSubmit} className="mt-3 flex flex-col">
+            <div className="space-y-4 overflow-y-auto max-h-[70dvh] sm:max-h-[60vh] pr-1">
             <div>
               <label className="text-sm font-medium">Título</label>
               <input
@@ -408,7 +409,8 @@ function TaskModal({ open, onClose, onSave, initial }) {
               </div>
             </div>
 
-            <div className="mt-2 flex justify-end gap-2">
+            </div>
+            <div className="sticky bottom-0 -mx-4 sm:-mx-5 px-4 sm:px-5 pt-3 mt-3 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 border-t flex justify-end gap-2">
               <button
                 type="button"
                 onClick={onClose}
@@ -439,13 +441,13 @@ function RecapModal({ open, onClose, plan, hours, onToggleDone, onCopy }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-3 sm:p-4"
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30 p-0 sm:p-4"
       >
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 20, opacity: 0 }}
-          className="w-full max-w-lg sm:max-w-xl rounded-2xl bg-white p-4 sm:p-5 shadow-xl"
+          className="w-full sm:max-w-xl rounded-t-2xl sm:rounded-2xl bg-white p-4 sm:p-5 shadow-xl max-h-[92dvh] overflow-hidden"
         >
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Recap de hoy</h3>
