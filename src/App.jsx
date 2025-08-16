@@ -773,12 +773,16 @@ export default function App() {
   }, []);
 
   const signIn = async () => {
-    const email = prompt("Escribe tu correo para iniciar sesión:");
-    if (!email) return;
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) alert(error.message);
-    else alert("Revisa tu correo y abre el enlace para entrar.");
-  };
+  const email = prompt("Escribe tu correo para iniciar sesión (te enviamos un link):");
+  if (!email) return;
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.origin } // 👈 importante
+  });
+  if (error) alert(error.message);
+  else alert("Revisa tu correo y abre el enlace para entrar.");
+};
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
