@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tipografía base y mejoras visuales */
+body {
+  @apply bg-gray-50 text-gray-900;
+}
+
+/* Scrollbar suave para modales largos */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 9999px;
+}
