@@ -63,6 +63,7 @@ function computePriority(t) {
   const importanceScore = importance * 4;
   // Penalización si falta info
   const infoPenalty = t.infoComplete ? 0 : -15;
+  // Bonus leve por tareas de trabajo/escuela (ajustable). Aquí neutro.
   const raw = Math.max(0, Math.min(100, urgency + importanceScore + infoPenalty));
   const label = raw >= 80 ? "Alta" : raw >= 50 ? "Media" : "Baja";
   return { score: raw, label, daysLeft };
@@ -125,19 +126,19 @@ function recommendToday(tasks, hoursAvailable = 4) {
 function toTextAgenda(plan, hours) {
   const lines = [];
   lines.push(`Recap de hoy — objetivo ${hours}h (sugerido ${plan.used.toFixed(1)}h)`);
-  lines.push("\\nTareas principales:");
+  lines.push("\nTareas principales:");
   plan.today.forEach((t, i) => {
     const pr = computePriority(t);
     lines.push(`${i + 1}. ${t.title} — ${t.effort || 0}h — ${t.dueDate ? `vence en ${pr.daysLeft}d` : "sin fecha"} — prioridad ${pr.label} (${pr.score})`);
   });
   if (plan.backup.length) {
-    lines.push("\\nSi sobra tiempo:");
-    plan.backup.slice(0, 5).forEach((t) => {
+    lines.push("\nSi sobra tiempo:");
+    plan.backup.slice(0, 5).forEach((t, i) => {
       const pr = computePriority(t);
       lines.push(`• ${t.title} — ${t.effort || 0}h — ${t.dueDate ? `en ${pr.daysLeft}d` : "sin fecha"}`);
     });
   }
-  return lines.join("\\n");
+  return lines.join("\n");
 }
 
 // ---- Datos de ejemplo (semilla) ----
@@ -279,13 +280,13 @@ function TaskModal({ open, onClose, onSave, initial }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-3 sm:p-4"
       >
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 20, opacity: 0 }}
-          className="w-full max-w-xl rounded-2xl bg-white p-5 shadow-xl"
+          className="w-full max-w-lg sm:max-w-xl rounded-2xl bg-white p-4 sm:p-5 shadow-xl"
         >
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
@@ -438,13 +439,13 @@ function RecapModal({ open, onClose, plan, hours, onToggleDone, onCopy }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-3 sm:p-4"
       >
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 20, opacity: 0 }}
-          className="w-full max-w-xl rounded-2xl bg-white p-5 shadow-xl"
+          className="w-full max-w-lg sm:max-w-xl rounded-2xl bg-white p-4 sm:p-5 shadow-xl"
         >
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Recap de hoy</h3>
@@ -523,7 +524,7 @@ function TaskCard({ task, onToggleDone, onToggleInfo, onEdit, onDelete }) {
       layout
       whileHover={{ y: -2 }}
       className={classNames(
-        "flex flex-col rounded-2xl border bg-white p-4 shadow-sm",
+        "flex flex-col rounded-2xl border bg-white p-3 sm:p-4 shadow-sm",
         pr.daysLeft !== null && pr.daysLeft < 0 && !task.done ? "border-red-300" : "border-gray-100",
         task.done ? "opacity-70" : ""
       )}
@@ -749,11 +750,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mx-auto max-w-6xl px-3 sm:px-4 py-6 sm:py-8">
         {/* Encabezado */}
         <header className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Planificador Prioritario</h1>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">Planificador Prioritario</h1>
             <p className="mt-1 text-sm text-gray-600">
               Organiza escuela <span className="text-green-600">(verde)</span> y trabajo
               <span className="text-blue-600"> (azul)</span>, detecta atrasos y prioriza automáticamente.
@@ -763,7 +764,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={addTask}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-medium text-white shadow hover:bg-blue-700"
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-medium text-white shadow hover:bg-blue-700 w-full sm:w-auto"
             >
               <Plus className="h-4 w-4" /> Nueva tarea
             </button>
@@ -780,7 +781,7 @@ export default function App() {
         <div className="mt-3"><ProgressBar value={stats.progress} /></div>
 
         {/* Mapa de prioridad (flujo) */}
-        <section className="mt-6 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <section className="mt-6 rounded-2xl border border-gray-100 bg-white p-3 sm:p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-gray-700">
               <AlertTriangle className="h-4 w-4" />
@@ -788,26 +789,23 @@ export default function App() {
             </div>
             <div className="text-xs text-gray-500">Burbuja = score; Verde Escuela, Azul Trabajo</div>
           </div>
-          <div className="mt-3 h-72 w-full">
+          <div className="mt-3 h-56 sm:h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="x" name="Días" tickCount={9}>
-                  <Label value="← Atrasadas | Días hasta entrega | Hoy →" offset={-10} position="insideBottom" />
+                <XAxis type="number" dataKey="x" name="Días" tickCount={7} tick={{ fontSize: 10 }}>
+                  <Label value="Días hasta entrega (0=hoy)" offset={-10} position="insideBottom" />
                 </XAxis>
-                <YAxis type="number" dataKey="y" name="Importancia" domain={[1, 5]} tickCount={5} />
+                <YAxis type="number" dataKey="y" name="Importancia" domain={[1, 5]} tickCount={5} tick={{ fontSize: 10 }} />
                 <ZAxis type="number" dataKey="z" range={[60, 1800]} />
                 <ReferenceLine x={0} stroke="#ef4444" strokeDasharray="4 4" />
                 <ReferenceLine y={4} stroke="#f59e0b" strokeDasharray="4 4" />
-                <Tooltip
-                  cursor={{ strokeDasharray: "3 3" }}
-                  formatter={(val, name, props) => {
-                    if (name === "y") return [val, "Importancia"];
-                    if (name === "x") return [val, "Días"];
-                    return [Math.round((props.payload.z || 0) / 20), "Score"];
-                  }}
-                  labelFormatter={(label) => `Día ${label}`}
-                />
+                <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(val, name, props) => {
+                  if (name === 'y') return [val, 'Importancia'];
+                  if (name === 'x') return [val, 'Días'];
+                  return [Math.round((props.payload.z || 0) / 20), 'Score'];
+                }}
+                labelFormatter={(label) => `Día ${label}`} />
                 <Legend />
                 <Scatter name="Escuela" data={chart.escuela} fill="#16a34a" />
                 <Scatter name="Trabajo" data={chart.trabajo} fill="#2563eb" />
@@ -888,6 +886,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* Lista de tareas */}
         {/* Acciones rápidas */}
         <section className="mt-6 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -915,7 +914,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* Lista de tareas */}
         <section className="mt-6">
           {filtered.length === 0 ? (
             <EmptyState onAdd={addTask} />
